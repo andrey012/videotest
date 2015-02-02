@@ -2,16 +2,27 @@
 /** 
  * usage: 
  *   public function setUp(){
+ *     Yii::import('application.vendor.videotest.VideoTestWebTestCaseDriver');
  *     $this->drivers[0]=VideoTestWebTestCaseDriver::attach($this->drivers[0], $this);
- *     return parent::setUp();
+ *     parent::setUp();
  *   }
  *   public function testABC(){
  *     $this->videoInit();
+ *     $this->open('');
+ *     $this->videoStart('ABC');
  *     $this->videoShowMessage('Test ABC');
  *     ... 
  * configuration:
  *   Yii::app()->params['selenium-video']['fast'] 
- *     set to 1 to skip messages and make test run faster during development
+ *     set to 1 to skip animation and make test run faster during development
+ *     set to 2 to skip all visual effects completely
+ *     inside the test you can override this value by using following functions: 
+ *       videoSlow() -- equal to setting configuration value to 0
+ *       videoFast() -- equal to setting configuration value to 1
+ *       videoSkip() -- equal to setting configuration value to 2
+ *       videoDefault() -- returns to default setting from configuration
+ *       these functions can be configured to be ignored on CI server 
+ *       if Yii::app()->params['selenium-video']['ignore-fast-override'] is set to true
  */
 
 
@@ -425,15 +436,15 @@ class VideoTestWebTestCaseDriver {
 
     /** 
      * magic method to save some time when making video tests - it allows you change the code during 
-     * test execution (thus keeping browser open) and retry until code works
-     * function can get any parameters. All parameters will be passed to the test function
-     * test function should be declared in the test case class: 
+     * test execution (thus keeping browser open) and retry until code works.
+     * Function can get any parameters. All parameters will be passed to the test function
+     * test function should be declared in the test case class, and have name "t": 
      * e.g. 
      *   function t() {
      * or 
      *   function t($params) {
      * This dotry function will call test function t in an indefinite loop asking you to press Enter 
-     * in the test console after each turn. All exceptions will be caught and displayed. 
+     * in the test console after each turn. All exceptions will be caught and displayed instead of making test fail.
      * After code works - you can move code from test function t to the main testcase function.
      */
     public function dotry(){
