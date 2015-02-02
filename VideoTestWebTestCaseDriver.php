@@ -147,7 +147,7 @@ class VideoTestWebTestCaseDriverFunctions {
             usleep(100000);
         }
         $this->testCase->mouseOver($element);
-        if ($highlightCallback) call_user_func($highlightCallback);
+        if ($highlightCallback) call_user_func_array($highlightCallback, array($element));
         if (!$this->isFastModeOn()) usleep(200000);
     }
     /** 
@@ -394,9 +394,9 @@ class VideoTestWebTestCaseDriverFunctions {
  * usage - see above
  */
 class VideoTestWebTestCaseDriver {
-    private $driver;
-    private $testCase; 
-    private $functions;
+    protected $driver;
+    protected $testCase; 
+    protected $functions;
 
     static public function attach($driver, $testCase){
         if (is_a($driver, __CLASS__)) return $driver;
