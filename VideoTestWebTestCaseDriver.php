@@ -306,19 +306,22 @@ class VideoTestWebTestCaseDriverFunctions {
             $this->testCase->type($element, $text);
             return;
         }
-        $existingId = $this->testCase->getAttribute($element.'@id');
+        $existingId = false;
+        try {
+            $existingId = $this->testCase->getAttribute($element.'@id');
+        } catch (Exception $e){}
         if ($existingId){
             $idToUse = $existingId;
         } else {
             $idToUse = 'videoTestDriverVideoTypeInput'.rand(100000,900000);
             $this->testCase->assignId($element, $idToUse);
         }
-        $this->testCase->runScript('(function(){ window.document.getElementsByTagName("body")[0].appendChild(window.document.createElement('.CJSON::encode($idToUse).')); var text = '.CJSON::encode($text).'; var putChar = function(i){ if (i > text.length) { var mark = window.document.getElementsByTagName('.CJSON::encode($idToUse).')[0]; mark.parentNode.removeChild(mark); return; } window.document.getElementById('.CJSON::encode($idToUse).').value = text.substr(0, i); setTimeout(function(){putChar(i+1);},100);}; putChar(1);})();');
+        $this->testCase->runScript('(function(){ window.document.getElementsByTagName("body")[0].appendChild(window.document.createElement('.CJSON::encode($idToUse).')); var text = '.CJSON::encode($text).'; var putChar = function(i){ if (i > text.length) { var mark = window.document.getElementsByTagName('.CJSON::encode($idToUse).')[0]; mark.parentNode.removeChild(mark); return; }  window.document.getElementById('.CJSON::encode($idToUse).').value = text.substr(0, i); setTimeout(function(){putChar(i+1);},100);}; putChar(1);})();');
+        for ($t = time(); ($this->testCase->getEval('window.document.getElementsByTagName('.CJSON::encode($idToUse).').length')) && (time() < $t + 60); ){
+            usleep(300000);
+        }
         if ($idToUse !== $existingId){
             $this->testCase->assignId('id='.$idToUse, $existingId);
-        }
-        while ($this->testCase->getEval('window.document.getElementsByTagName('.CJSON::encode($idToUse).').length')){
-            usleep(300000);
         }
     }
     /** 
