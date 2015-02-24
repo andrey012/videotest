@@ -306,13 +306,19 @@ class VideoTestWebTestCaseDriverFunctions {
             $this->testCase->type($element, $text);
             return;
         }
-        $msg = '';
-        $text .= ' ';
-        while (preg_match('/^(.)(.+)$/su', $text, $m)){
-            $msg .= $m[1];
-            $text = $m[2];
-            $this->testCase->type($element, $msg);
-            usleep(20000);
+        $existingId = $this->testCase->getAttribute($element.'@id');
+        if ($existingId){
+            $idToUse = $existingId;
+        } else {
+            $idToUse = 'videoTestDriverVideoTypeInput'.rand(100000,900000);
+            $this->testCase->assignId($element, $idToUse);
+        }
+        $this->testCase->runScript('(function(){ window.document.getElementsByTagName("body")[0].appendChild(window.document.createElement('.CJSON::encode($idToUse).')); var text = '.CJSON::encode($text).'; var putChar = function(i){ if (i > text.length) { var mark = window.document.getElementsByTagName('.CJSON::encode($idToUse).')[0]; mark.parentNode.removeChild(mark); return; } window.document.getElementById('.CJSON::encode($idToUse).').value = text.substr(0, i); setTimeout(function(){putChar(i+1);},100);}; putChar(1);})();');
+        if ($idToUse !== $existingId){
+            $this->testCase->assignId('id='.$idToUse, $existingId);
+        }
+        while ($this->testCase->getEval('window.document.getElementsByTagName('.CJSON::encode($idToUse).').length')){
+            usleep(300000);
         }
     }
     /** 
