@@ -316,9 +316,13 @@ class VideoTestWebTestCaseDriverFunctions {
             $idToUse = 'videoTestDriverVideoTypeInput'.rand(100000,900000);
             $this->testCase->assignId($element, $idToUse);
         }
-        $this->testCase->runScript('(function(){ window.document.getElementsByTagName("body")[0].appendChild(window.document.createElement('.CJSON::encode($idToUse).')); var text = '.CJSON::encode($text).'; var putChar = function(i){ if (i > text.length) { var mark = window.document.getElementsByTagName('.CJSON::encode($idToUse).')[0]; mark.parentNode.removeChild(mark); return; }  window.document.getElementById('.CJSON::encode($idToUse).').value = text.substr(0, i); setTimeout(function(){putChar(i+1);},100);}; putChar(1);})();');
-        for ($t = time(); ($this->testCase->getEval('window.document.getElementsByTagName('.CJSON::encode($idToUse).').length')) && (time() < $t + 60); ){
+        $markElement = 'videotestdrivervideotypemark'.rand(100000, 900000);
+        $this->testCase->runScript('(function(){ window.document.getElementsByTagName("body")[0].appendChild(window.document.createElement('.CJSON::encode($markElement).')); var text = '.CJSON::encode((string)$text.'').'; var putChar = function(i){ if (i > text.length) { var marks = window.document.getElementsByTagName('.CJSON::encode($markElement).'); var j; for (j = 0; j < marks.length; j++) { marks[j].parentNode.removeChild(marks[j]); } return; }  window.document.getElementById('.CJSON::encode($idToUse).').value = text.substr(0, i); setTimeout(function(){putChar(i+1);},100);}; putChar(1);})();');
+        for ($t = time(); ($this->testCase->getEval('window.document.getElementsByTagName('.CJSON::encode($markElement).').length')) && (time() < $t + 60); ){
             usleep(300000);
+        }
+        if ($this->testCase->getEval('window.document.getElementsByTagName('.CJSON::encode($markElement).').length')){
+            $this->testCase->fail(__CLASS__.' could not remove mark '.$markElement);
         }
         if ($idToUse !== $existingId){
             $this->testCase->assignId('id='.$idToUse, $existingId);
