@@ -450,17 +450,16 @@ class VideoTestWebTestCaseDriver {
     /** 
      * magic method to save some time when making video tests - it allows you change the code during 
      * test execution (thus keeping browser open) and retry until code works.
-     * Function can get any parameters. All parameters will be passed to the test function
-     * test function should be declared in the test case class, and have name "t": 
-     * e.g. 
-     *   function t() {
-     * or 
-     *   function t($params) {
-     * This dotry function will call test function t in an indefinite loop asking you to press Enter 
+     * @param $params array array of parameters to be passed to the test function 
+     * usual usage  simply put following line at the appropriate place of your code: 
+     *        $this->doTry(get_defined_vars()); } function t(){
+     * this line will split your test case into two functions - one will end with ->doTry call, and another 
+     * one will be put into the t() test function
+     * This doTry() function will call test function t in an indefinite loop asking you to press Enter 
      * in the test console after each turn. All exceptions will be caught and displayed instead of making test fail.
      * After code works - you can move code from test function t to the main testcase function.
      */
-    public function dotry(){
+    public function doTry($params = array()){
         static $iteration = 0;
         static $preventDistructors = array();
         while (1){
@@ -478,6 +477,11 @@ class VideoTestWebTestCaseDriver {
             }
             $iteration ++;
             $testFile = preg_replace('/^\<\?(php)?/ui', '', $testFile);
+            $paramNames = array();
+            foreach ($params as $k=>$v){
+                $paramNames[]='$'.$k;
+            }
+            $testFile = preg_replace('/(public\s+)?function\s+t\s*\(\)[ \t\r\n]*\{/', 'public function t('.implode(', ', $paramNames).'){', $testFile);
             eval($testFile);
             $test = new $newClassName;
             $preventDistructors[] = $test;
@@ -492,7 +496,7 @@ class VideoTestWebTestCaseDriver {
 
 
             try {
-                call_user_func_array(array($test, 't'), func_get_args());
+                call_user_func_array(array($test, 't'), $params);
             } catch (Exception $e){
                 print_r($e);
             }
@@ -501,6 +505,7 @@ class VideoTestWebTestCaseDriver {
             fgets(STDIN);
 
         }        
+
     }
     /** 
      * just dumps values during test execution. To be used for debugging tests
