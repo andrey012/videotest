@@ -2,7 +2,7 @@
 
 This is small extension over Yii CWebTestCase to enable some nice animation features for functional tests.
 
-These features should be useful for recording videos on Continuous Integration servers. These videos can be used as acceptance materials or for teaching users/testers/other developers. 
+These features should be useful for recording videos on Continuous Integration servers. These videos can be used as acceptance materials or for teaching users/testers/other developers. Actually this is implementation of Agile "Code vs. Documentation" thesis - another attempt to use existing code of functional tests as useful and always up-to-date documentation.
 
 Some examples on video effects, that can be created using this extension can be found at https://github.com/andrey012/videotestresults
 
