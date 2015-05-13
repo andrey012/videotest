@@ -1,7 +1,7 @@
 # videotest
 
-[API](http://andrey012.github.io/videotest/docs/)
-[Samples of videos](https://github.com/andrey012/videotestresults/)
+* [API](http://andrey012.github.io/videotest/docs/)
+* [Samples of videos](https://github.com/andrey012/videotestresults/)
 
 This is small extension over Yii CWebTestCase to enable some nice animation features for functional tests.
 
