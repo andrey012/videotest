@@ -261,7 +261,7 @@ class VideoTestWebTestCaseDriverFunctions {
 
     public function videoMouseClick($element, $nearTheLeftSide=false, $highlightCallback=false){
         $this->testCase->videoSetVisible($element);
-        if ($this->isSkipModeOn()) return;
+        if ($this->isSkipModeOn()) return $this->testCase;
         $x = $this->testCase->getElementPositionLeft($element) + ($nearTheLeftSide?rand(5,20):($this->testCase->getElementWidth($element)*rand(20,80)/100));
         $y = ($a=$this->testCase->getElementPositionTop($element)) + ($b=$this->testCase->getElementHeight($element))*($c=rand(20,80)/100) - ($d=$this->testCase->getEval('window.document.documentElement.scrollTop'));
         if (is_array($nearTheLeftSide)){
@@ -361,7 +361,7 @@ class VideoTestWebTestCaseDriverFunctions {
                 $this->testCase->select('id='.$id, 'value='.$value);
                 $this->testCase->runScript('window.document.getElementById("'.$id.'").nextSibling.children[0].innerHTML='.CJSON::encode($name).';');
                 $this->testCase->runScript($toggle);
-                return; 
+                return $this->testCase; 
             } catch (Exception $e){
                 sleep(1);
             }
@@ -399,7 +399,7 @@ class VideoTestWebTestCaseDriverFunctions {
      * @return CWebTestCase $this for chaining
      */
     public function videoShowImage($files, $durations=5){
-        if ($this->isSkipModeOn()) return;
+        if ($this->isSkipModeOn()) return $this->testCase;
         static $fnNameCounter = 1; 
         if (!is_array($files)) $files=array($files);
         if (!is_array($durations)) $durations=array($durations);
@@ -438,7 +438,7 @@ class VideoTestWebTestCaseDriverFunctions {
      * @return CWebTestCase $this for chaining
      */
     public function videoShowMessage($text, $position=null, $moreMsToWait = 0){
-        if ($this->isSkipModeOn()) return;
+        if ($this->isSkipModeOn()) return $this->testCase;
         if (!$position) $position = $this->videoDefaultMessagePosition;
         $pc = array('');
         $text .= ' ';
@@ -506,7 +506,7 @@ class VideoTestWebTestCaseDriverFunctions {
     public function videoType($element, $text){
         if ($this->isFastModeOn()){
             $this->testCase->type($element, $text);
-            return;
+            return $this->testCase; 
         }
         $existingId = false;
         try {
