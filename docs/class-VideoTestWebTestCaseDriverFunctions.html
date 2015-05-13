@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>Class VideoTestWebTestCaseDriverFunctions</title>
+
+	<link rel="stylesheet" href="resources/style.css?e99947befd7bf673c6b43ff75e9e0f170c88a60e">
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+		</div>
+
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-VideoTestWebTestCaseDriver.html">VideoTestWebTestCaseDriver</a></li>
+				<li class="active"><a href="class-VideoTestWebTestCaseDriverFunctions.html">VideoTestWebTestCaseDriverFunctions</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="text" name="q" class="text" placeholder="Search">
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class VideoTestWebTestCaseDriverFunctions</h1>
+
+
+	<div class="description">
+	<p>Collection of video functions</p>
+	</div>
+
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		
+		
+
+			<b>Located at</b> <a href="source-class-VideoTestWebTestCaseDriverFunctions.html#194-626" title="Go to source code">VideoTestWebTestCaseDriver.php</a>
+		<br>
+	</div>
+
+
+
+	<table class="summary methods" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="videoSetVisible" id="_videoSetVisible">
+
+		<td class="attributes"><code>
+			 public 
+
+			CWebTestCase
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_videoSetVisible">#</a>
+		<code><a href="source-class-VideoTestWebTestCaseDriverFunctions.html#203-249" title="Go to source code">videoSetVisible</a>( <span>string <var>$element</var></span> )</code>
+
+		<div class="description short">
+			<p>Makes sure that element is visible.
+Scrolls page up or down if necessary. No horizontal scroll.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Makes sure that element is visible.
+Scrolls page up or down if necessary. No horizontal scroll.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$element</var></dt>
+					<dd><ul>
+<li>same as element in Selenium methods</li>
+</ul></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					CWebTestCase<br>$this for chaining
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="videoMouseClick" id="_videoMouseClick">
+
+		<td class="attributes"><code>
+			 public 
+
+			CWebTestCase
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_videoMouseClick">#</a>
+		<code><a href="source-class-VideoTestWebTestCaseDriverFunctions.html#252-325" title="Go to source code">videoMouseClick</a>( <span>string <var>$element</var></span>, <span>true|array <var>$nearTheLeftSide</var> = <span class="php-keyword1">false</span></span>, <span> <var>$highlightCallback</var> = <span class="php-keyword1">false</span></span> )</code>
+
+		<div class="description short">
+			<p>Draws mouse cursor which moves towards desired control, then invokes mouseOver
+This method DOES NOT CLICK, this method only animates mouse cursor (arrow)</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Draws mouse cursor which moves towards desired control, then invokes mouseOver
+This method DOES NOT CLICK, this method only animates mouse cursor (arrow)</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$element</var></dt>
+					<dd><ul>
+<li>same as element in Selenium methods</li>
+</ul></dd>
+					<dt><var>$nearTheLeftSide</var></dt>
+					<dd><p>true -> mouse will move to the left side of the element (useful for labels of checkboxes)
+  array(top,left) - exact coordinates (px) where to move
+  array(+5, +0) - tweak coordinates - add 5 px to top and leave left as is</p></dd>
+					<dt><var>$highlightCallback</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					CWebTestCase<br>$this for chaining
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="videoSleep" id="_videoSleep">
+
+		<td class="attributes"><code>
+			 public 
+
+			CWebTestCase
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_videoSleep">#</a>
+		<code><a href="source-class-VideoTestWebTestCaseDriverFunctions.html#326-338" title="Go to source code">videoSleep</a>( <span>integer <var>$millis</var> = <span class="php-num">2000</span></span> )</code>
+
+		<div class="description short">
+			<p>Just pause to let user see what's on the screen.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Just pause to let user see what's on the screen.</p>
+
+<p>Pause is skipped in any of fast modes.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$millis</var></dt>
+					<dd>time to sleep in milliseconds, default = 2000 (2 seconds)</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					CWebTestCase<br>$this for chaining
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="videoCustomSelectBoxSelect" id="_videoCustomSelectBoxSelect">
+
+		<td class="attributes"><code>
+			 public 
+
+			CWebTestCase
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_videoCustomSelectBoxSelect">#</a>
+		<code><a href="source-class-VideoTestWebTestCaseDriverFunctions.html#340-370" title="Go to source code">videoCustomSelectBoxSelect</a>( <span>string <var>$id</var></span>, <span>string <var>$value</var></span> )</code>
+
+		<div class="description short">
+			<p>Selects an item from drop-down select box, when custom selectbox is used</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Selects an item from drop-down select box, when custom selectbox is used</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$id</var></dt>
+					<dd>id of select element</dd>
+					<dt><var>$value</var></dt>
+					<dd>value to be selected. IMPORTANT: value should be visible initially, scrolling is not implemented yet</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					CWebTestCase<br>$this for chaining
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="videoHideDatePicker" id="_videoHideDatePicker">
+
+		<td class="attributes"><code>
+			 public 
+
+			CWebTestCase
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_videoHideDatePicker">#</a>
+		<code><a href="source-class-VideoTestWebTestCaseDriverFunctions.html#372-379" title="Go to source code">videoHideDatePicker</a>( )</code>
+
+		<div class="description short">
+			<p>Removes DatePicker window, that will eventually appear after you focus on date text input</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Removes DatePicker window, that will eventually appear after you focus on date text input</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					CWebTestCase<br>$this for chaining
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="videoSetDefaultMessagePosition" id="_videoSetDefaultMessagePosition">
+
+		<td class="attributes"><code>
+			 public 
+
+			CWebTestCase
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_videoSetDefaultMessagePosition">#</a>
+		<code><a href="source-class-VideoTestWebTestCaseDriverFunctions.html#381-391" title="Go to source code">videoSetDefaultMessagePosition</a>( <span> <var>$position</var> = <code><a href="class-VideoTestWebTestCaseDriverFunctions.html#VIDEO_DEFAULT_MESSAGE_POSITION">VideoTestWebTestCaseDriverFunctions::<b>VIDEO_DEFAULT_MESSAGE_POSITION</b></a></code></span> )</code>
+
+		<div class="description short">
+			<p>Sets default position for message window.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Sets default position for message window.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$position</var></dt>
+					<dd><p>a CSS style definition, e.g.: 'top: 100px; left: 100px; right: 100px; height: 200px;'.
+IMPORTANT: the ; at the end is mandatory</p></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					CWebTestCase<br>$this for chaining
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="videoShowImage" id="_videoShowImage">
+
+		<td class="attributes"><code>
+			 public 
+
+			CWebTestCase
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_videoShowImage">#</a>
+		<code><a href="source-class-VideoTestWebTestCaseDriverFunctions.html#393-433" title="Go to source code">videoShowImage</a>( <span>array <var>$files</var></span>, <span>integer|array <var>$durations</var> = <span class="php-num">5</span></span> )</code>
+
+		<div class="description short">
+			<p>Shows slideshow of images. Use it when animation is not possible.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Shows slideshow of images. Use it when animation is not possible.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$files</var></dt>
+					<dd>array of filenames of images to be shown</dd>
+					<dt><var>$durations</var></dt>
+					<dd><p>pause between sequental images, measured in seconds. If array
+is specified, then it should have same keys and same number of items as $files</p></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					CWebTestCase<br>$this for chaining
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="videoShowMessage" id="_videoShowMessage">
+
+		<td class="attributes"><code>
+			 public 
+
+			CWebTestCase
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_videoShowMessage">#</a>
+		<code><a href="source-class-VideoTestWebTestCaseDriverFunctions.html#434-499" title="Go to source code">videoShowMessage</a>( <span> <var>$text</var></span>, <span> <var>$position</var> = <span class="php-keyword1">null</span></span>, <span> <var>$moreMsToWait</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			<p>Shows message</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Shows message</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$text</var></dt>
+					<dd><ul>
+<li>the text. Use "\n" to separate lines.</li>
+</ul></dd>
+					<dt><var>$position</var></dt>
+					<dd>see videoSetDefaultMessagePosition</dd>
+					<dt><var>$moreMsToWait</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					CWebTestCase<br>$this for chaining
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="videoType" id="_videoType">
+
+		<td class="attributes"><code>
+			 public 
+
+			CWebTestCase
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_videoType">#</a>
+		<code><a href="source-class-VideoTestWebTestCaseDriverFunctions.html#500-533" title="Go to source code">videoType</a>( <span>string <var>$element</var></span>, <span>string <var>$text</var></span> )</code>
+
+		<div class="description short">
+			<p>Types text inside specified element</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Types text inside specified element</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$element</var></dt>
+					<dd><ul>
+<li>same as element in Selenium methods</li>
+</ul></dd>
+					<dt><var>$text</var></dt>
+					<dd><ul>
+<li>text to type</li>
+</ul></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					CWebTestCase<br>$this for chaining
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="videoStart" id="_videoStart">
+
+		<td class="attributes"><code>
+			 public 
+
+			CWebTestCase
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_videoStart">#</a>
+		<code><a href="source-class-VideoTestWebTestCaseDriverFunctions.html#534-544" title="Go to source code">videoStart</a>( <span>string <var>$name</var></span> )</code>
+
+		<div class="description short">
+			<p>Starts video recording</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Starts video recording</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd><ul>
+<li>name of video file</li>
+</ul></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					CWebTestCase<br>$this for chaining
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="videoStop" id="_videoStop">
+
+		<td class="attributes"><code>
+			 public 
+
+			CWebTestCase
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_videoStop">#</a>
+		<code><a href="source-class-VideoTestWebTestCaseDriverFunctions.html#545-555" title="Go to source code">videoStop</a>( )</code>
+
+		<div class="description short">
+			<p>Finishes video</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Finishes video</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					CWebTestCase<br>$this for chaining
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="videoInit" id="_videoInit">
+
+		<td class="attributes"><code>
+			 public 
+
+			CWebTestCase
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_videoInit">#</a>
+		<code><a href="source-class-VideoTestWebTestCaseDriverFunctions.html#557-570" title="Go to source code">videoInit</a>( )</code>
+
+		<div class="description short">
+			<p>Prepares for video recording -
+opens homepage, clears cookies,  maximizes window,
+sets ENVIRONMENT=SELENIUM_TEST cookie to let backend know that test configuration should be used</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Prepares for video recording -
+opens homepage, clears cookies,  maximizes window,
+sets ENVIRONMENT=SELENIUM_TEST cookie to let backend know that test configuration should be used</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					CWebTestCase<br>$this for chaining
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="videoFast" id="_videoFast">
+
+		<td class="attributes"><code>
+			 public 
+
+			CWebTestCase
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_videoFast">#</a>
+		<code><a href="source-class-VideoTestWebTestCaseDriverFunctions.html#572-579" title="Go to source code">videoFast</a>( )</code>
+
+		<div class="description short">
+			<p>Force fast mode -- used when debugging tests to save time</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Force fast mode -- used when debugging tests to save time</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					CWebTestCase<br>$this for chaining
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="videoSlow" id="_videoSlow">
+
+		<td class="attributes"><code>
+			 public 
+
+			CWebTestCase
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_videoSlow">#</a>
+		<code><a href="source-class-VideoTestWebTestCaseDriverFunctions.html#581-588" title="Go to source code">videoSlow</a>( )</code>
+
+		<div class="description short">
+			<p>Force slow mode -- used when debugging tests to save time</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Force slow mode -- used when debugging tests to save time</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					CWebTestCase<br>$this for chaining
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="videoSkip" id="_videoSkip">
+
+		<td class="attributes"><code>
+			 public 
+
+			CWebTestCase
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_videoSkip">#</a>
+		<code><a href="source-class-VideoTestWebTestCaseDriverFunctions.html#590-598" title="Go to source code">videoSkip</a>( )</code>
+
+		<div class="description short">
+			<p>Force skip mode -- used when debugging tests to save even more
+time - all visual effects will be turned off</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Force skip mode -- used when debugging tests to save even more
+time - all visual effects will be turned off</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					CWebTestCase<br>$this for chaining
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="videoDefault" id="_videoDefault">
+
+		<td class="attributes"><code>
+			 public 
+
+			CWebTestCase
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_videoDefault">#</a>
+		<code><a href="source-class-VideoTestWebTestCaseDriverFunctions.html#600-607" title="Go to source code">videoDefault</a>( )</code>
+
+		<div class="description short">
+			<p>Reset mode to default (defined by config) -- used when debugging tests to save time</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Reset mode to default (defined by config) -- used when debugging tests to save time</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					CWebTestCase<br>$this for chaining
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isFastModeOn" id="_isFastModeOn">
+
+		<td class="attributes"><code>
+			 public 
+
+			boolean|integer
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isFastModeOn">#</a>
+		<code><a href="source-class-VideoTestWebTestCaseDriverFunctions.html#609-619" title="Go to source code">isFastModeOn</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					boolean|integer<br>0 or false for slow mode, 1 for fast mode, 2 for skip mode
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isSkipModeOn" id="_isSkipModeOn">
+
+		<td class="attributes"><code>
+			 public 
+
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isSkipModeOn">#</a>
+		<code><a href="source-class-VideoTestWebTestCaseDriverFunctions.html#620-625" title="Go to source code">isSkipModeOn</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					boolean<br>true if skip mode is on
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+	<table class="summary constants" id="constants">
+	<caption>Constants summary</caption>
+	<tr data-order="VIDEO_DEFAULT_MESSAGE_POSITION" id="VIDEO_DEFAULT_MESSAGE_POSITION">
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-class-VideoTestWebTestCaseDriverFunctions.html#200" title="Go to source code"><b>VIDEO_DEFAULT_MESSAGE_POSITION</b></a>
+			</code>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#VIDEO_DEFAULT_MESSAGE_POSITION" class="anchor">#</a>
+				<code><span class="php-quote">'top: 100px; left: 100px; right: 100px; height: 200px;'</span></code>
+			</div>
+		</td>
+	</tr>
+	</table>
+
+
+
+
+	<table class="summary properties" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="overrideFastMode" id="$overrideFastMode">
+		<td class="attributes"><code>
+			public  
+			boolean
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-VideoTestWebTestCaseDriverFunctions.html#198" title="Go to source code"><var>$overrideFastMode</var></a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$overrideFastMode" class="anchor">#</a>
+				<code><span class="php-keyword1">false</span></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="testCase" id="$testCase">
+		<td class="attributes"><code>
+			public  
+			
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-VideoTestWebTestCaseDriverFunctions.html#199" title="Go to source code"><var>$testCase</var></a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$testCase" class="anchor">#</a>
+				<code></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="videoDefaultMessagePosition" id="$videoDefaultMessagePosition">
+		<td class="attributes"><code>
+			public  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-VideoTestWebTestCaseDriverFunctions.html#201" title="Go to source code"><var>$videoDefaultMessagePosition</var></a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$videoDefaultMessagePosition" class="anchor">#</a>
+				<code><code><a href="class-VideoTestWebTestCaseDriverFunctions.html#VIDEO_DEFAULT_MESSAGE_POSITION">VideoTestWebTestCaseDriverFunctions::<b>VIDEO_DEFAULT_MESSAGE_POSITION</b></a></code></code>
+			</div>
+		</td>
+	</tr>
+	</table>
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		 API documentation generated by <a href="http://apigen.org">ApiGen</a>
+	</div>
+</div>
+</div>
+<script src="resources/combined.js"></script>
+<script src="elementlist.js"></script>
+</body>
+</html>

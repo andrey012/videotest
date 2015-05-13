@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<project name="cnnct" default="doc">
+    <target name="doc">
+        <delete dir="docs" quiet="true"/>
+        <mkdir dir="docs"/>
+        <exec command="apigen generate -d docs -s ./"/>
+    </target>
+</project>

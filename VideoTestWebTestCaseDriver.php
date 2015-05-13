@@ -1,31 +1,199 @@
 <?php
 /** 
+ * Custom Selenium Driver, which adds some animation functions.
+ * 
+ * <code>
  * usage: 
  *   public function setUp(){
  *     Yii::import('application.vendor.videotest.VideoTestWebTestCaseDriver');
  *     $this->drivers[0]=VideoTestWebTestCaseDriver::attach($this->drivers[0], $this);
  *     parent::setUp();
  *   }
+ *
  *   public function testABC(){
  *     $this->videoInit();
  *     $this->open('');
  *     $this->videoStart('ABC');
  *     $this->videoShowMessage('Test ABC');
  *     ... 
- * configuration:
- *   Yii::app()->params['selenium-video']['fast'] 
- *     set to 1 to skip animation and make test run faster during development
- *     set to 2 to skip all visual effects completely
- *     inside the test you can override this value by using following functions: 
- *       videoSlow() -- equal to setting configuration value to 0
- *       videoFast() -- equal to setting configuration value to 1
- *       videoSkip() -- equal to setting configuration value to 2
- *       videoDefault() -- returns to default setting from configuration
- *       these functions can be configured to be ignored on CI server 
- *       if Yii::app()->params['selenium-video']['ignore-fast-override'] is set to true
+ *   }
+ * </code>
+ * Configuration: <br/>
+ * <code>
+ * Yii::app()->params['selenium-video']['fast']  
+ *   *  set to 1 to skip animation and make test run faster during development  
+ *   *  set to 2 to skip all visual effects completely  
+ *   *  set to 0 or false for default (slow, animated) behavior  
+ * </code>
+ * Inside the test you can override this value by using following functions:  
+ * <code>
+ *   *   $this->videoSlow() -- equal to setting configuration value to 0  
+ *   *   $this->videoFast() -- equal to setting configuration value to 1  
+ *   *   $this->videoSkip() -- equal to setting configuration value to 2  
+ *   *   $this->videoDefault() -- returns to default setting from configuration  
+ * </code>
+ * These functions can be configured to be ignored on CI server -- set
+ * Yii::app()->params['selenium-video']['ignore-fast-override'] to true in your local CI config
  */
 
+class VideoTestWebTestCaseDriver {
+    protected $driver;
+    protected $testCase; 
+    protected $functions;
 
+    /**
+     * Creates driver object which wraps original one adding our functions
+     * @param PHPUnit_Extensions_SeleniumTestCase_Driver $driver current driver. See Usage above
+     * @param CWebTestCase $testCase current test case. See Usage above
+     * @return PHPUnit_Extensions_SeleniumTestCase_Driver driver to be placed to $this->drivers[0]
+     */
+    static public function attach($driver, $testCase){
+        if (is_a($driver, __CLASS__)) return $driver;
+        $class = __CLASS__;
+        $copy = new $class;
+        $copy->driver = $driver;
+        $copy->testCase = $testCase;
+        $copy->functions = new VideoTestWebTestCaseDriverFunctions();
+        $copy->functions->testCase = $testCase;
+        return $copy;
+    }
+
+    /**
+     * @var boolean used to hide errors, that can be introduced by video driver
+     */
+    private $_lastCallWasVideoCall;
+
+    /**
+     * Wrapper magic getter
+     * @param string $name
+     * @return mixed
+     */
+    public function __get($name){
+        return $this->driver->$name;
+    }
+    /**
+     * Wrapper magic setter
+     * @param string $name
+     * @param mixed $value
+     * @return void
+     */
+    public function __set($name, $value){
+        $this->driver->$name = $value;
+    }
+    /**
+     * Wrapper magic method
+     * Routes calls started with "video" to our driver, and hides errors, that can be 
+     * introduced by our driver
+     * @param string $fn
+     * @param array $args
+     * @return mixed
+     */
+    public function __call($fn, $args){
+        if (preg_match('/^video/', $fn)){
+            // this is our call
+            $result = call_user_func_array(array($this->functions, $fn), $args);
+            $this->_lastCallWasVideoCall = true;
+        } elseif (in_array($fn, array('getVerificationErrors', 'clearVerificationErrors'))){
+            if (!$this->_lastCallWasVideoCall){
+                return $this->driver->$fn();
+            } else {
+                return array();
+            }
+        } else {
+            $this->_lastCallWasVideoCall = false;
+            return call_user_func_array(array($this->driver, $fn), $args);
+        }
+    }
+
+    /** 
+     * Trial-and-error method for writing video tests
+     * 
+     * Magic method to save some time when making video tests - it allows you change the code during 
+     * test execution (thus keeping browser open) and retry until code works.
+     * 
+     * Usual usage  simply put following line at the appropriate place of your code:
+     * <code>
+     *        $this->doTry(get_defined_vars()); } function t(){
+     * </code>
+     * This line will split your test function into two functions - one will end with ->doTry() call,
+     * and another one will go into the t() test function
+     * 
+     * This doTry() function will call test function t in an indefinite loop asking you to press Enter 
+     * in the test console after each turn. All exceptions will be caught and displayed instead 
+     * of making test fail.
+     * 
+     * As soon as a piece of code works (i.e. it clicks appropriate button or link) - you move working
+     * code from t() function up to your test function.
+     * 
+     * After code works - you should have your t() function empty and simply remove the ->doTry() line.
+     * @param $params array array of parameters to be passed to the test function 
+     * @return void
+     */
+    public function doTry($params = array()){
+        static $iteration = 0;
+        static $preventDistructors = array();
+        while (1){
+            $d = debug_backtrace();
+            $testFile = file_get_contents($d[4]['file']);
+            preg_match_all($pattern = '/class\s+([^ ]+)\s+extends\s+/ui', $testFile, $m);
+            if (!count($m[0])) throw new Exception($pattern.' not found');
+            $testClassName = array();
+            foreach ($m[0] as $k=>$v){
+                $className = $m[1][$k];
+                $newClassName = $className.$iteration;
+                $testFile = str_replace($v, 'class '.$newClassName.' extends ', $testFile);
+                $classNames[$className] = $newClassName;
+                if (is_a($className, 'CWebTestCase')) $testClassName = $newClassName;
+            }
+            $iteration ++;
+            $testFile = preg_replace('/^\<\?(php)?/ui', '', $testFile);
+            $paramNames = array();
+            foreach ($params as $k=>$v){
+                $paramNames[]='$'.$k;
+            }
+            $testFile = preg_replace('/(public\s+)?function\s+t\s*\(\)[ \t\r\n]*\{/', 'public function t('.implode(', ', $paramNames).'){', $testFile);
+            eval($testFile);
+            $test = new $newClassName;
+            $preventDistructors[] = $test;
+            $reflection = new ReflectionClass($test);
+            $property = $reflection->getProperty('drivers');
+            $property->setAccessible(true);
+            
+            $oldReflection = new ReflectionClass($this->testCase);
+            $oldProperty = $oldReflection->getProperty('drivers');
+            $oldProperty->setAccessible(true);
+            $property->setValue($test, $oldProperty->getValue($this->testCase));
+
+
+            try {
+                call_user_func_array(array($test, 't'), $params);
+            } catch (Exception $e){
+                print_r($e);
+            }
+            echo PHP_EOL.'press enter...'.PHP_EOL;
+            @flush(); @ob_flush();
+            fgets(STDIN);
+
+        }        
+
+    }
+    /** 
+     * just dumps values during test execution. To be used for debugging tests
+     * @param mixed $msg can be of any type, since print_r will be used
+     * @return void
+     */
+    public function say($msg){
+        print_r($msg);
+        echo PHP_EOL;
+        if (strlen(print_r($msg, true)) < 100) var_dump($msg);
+        flush(); @ob_flush();
+    }
+}
+
+
+/**
+ * Collection of video functions
+ */
 class VideoTestWebTestCaseDriverFunctions {
     public $overrideFastMode = false;
     public $testCase;
@@ -33,16 +201,19 @@ class VideoTestWebTestCaseDriverFunctions {
     public $videoDefaultMessagePosition = self::VIDEO_DEFAULT_MESSAGE_POSITION;
 
     /** 
-     * Makes sure that element is visible 
-     * scrolls up-down if necessary. No horizontal scroll. 
-     * @param $element string - same as element in Selenium methods
+     * Makes sure that element is visible.
+     * Scrolls page up or down if necessary. No horizontal scroll. 
+     * @param string $element - same as element in Selenium methods
+     * @return CWebTestCase $this for chaining
      */
     public function videoSetVisible($element){
         $x = $this->testCase->getElementPositionLeft($element);
         $y = $this->testCase->getElementPositionTop($element);
-        $step = $this->isFastModeOn()?50:15;
+        // determine scroll step depending on mode.
+        $step = $this->isFastModeOn()?50:15; // px
         $windowHeight = $this->testCase->getEval('window.innerHeight');
         $height = min($windowHeight * 80 / 100, $this->testCase->getElementHeight($element));
+        // scroll up until element is visible and at least 50px below window top
         while ((($y - $height/2) < (($currentYScroll = $this->testCase->getEval('window.document.documentElement.scrollTop')) + 50)) && $currentYScroll){
             if ($this->isFastModeOn()){
                 $step = 50;
@@ -58,6 +229,7 @@ class VideoTestWebTestCaseDriverFunctions {
             if (!$this->isFastModeOn()) usleep(10000);
         }
         $lastYScroll = -1;
+        // scroll down until element is visible and at least 50px above window bottom
         while ((($y + $height/2) > (($currentYScroll = $this->testCase->getEval('window.document.documentElement.scrollTop')) + $windowHeight - 50)) && ($currentYScroll != $lastYScroll)){
             if ($this->isFastModeOn()){
                 $step = 50;
@@ -73,21 +245,21 @@ class VideoTestWebTestCaseDriverFunctions {
             $this->testCase->runScript("window.scrollBy(0,".$step.");");
             if (!$this->isFastModeOn()) usleep(10000);
         }
-
+        return $this->testCase;
     }
 
     /** 
      * Draws mouse cursor which moves towards desired control, then invokes mouseOver
-     * This method DOES NOT CLICK, this method only animates mouse
-     * @param $element string - same as element in Selenium methods
-     * @param $nearTheLeftSide mixed
+     * This method DOES NOT CLICK, this method only animates mouse cursor (arrow)
+     * @param string $element - same as element in Selenium methods
+     * @param true|array $nearTheLeftSide
      *   true -> mouse will move to the left side of the element (useful for labels of checkboxes)
      *   array(top,left) - exact coordinates (px) where to move
      *   array(+5, +0) - tweak coordinates - add 5 px to top and leave left as is
+     * @return CWebTestCase $this for chaining
      */
 
     public function videoMouseClick($element, $nearTheLeftSide=false, $highlightCallback=false){
-        $this->testCase->runScript('var list = window.document.getElementsByClassName("bftv_hover"); while (list.length) { list[0].className = list[0].className.replace("bftv_hover", ""); } ');
         $this->testCase->videoSetVisible($element);
         if ($this->isSkipModeOn()) return;
         $x = $this->testCase->getElementPositionLeft($element) + ($nearTheLeftSide?rand(5,20):($this->testCase->getElementWidth($element)*rand(20,80)/100));
@@ -149,20 +321,28 @@ class VideoTestWebTestCaseDriverFunctions {
         $this->testCase->mouseOver($element);
         if ($highlightCallback) call_user_func_array($highlightCallback, array($element));
         if (!$this->isFastModeOn()) usleep(200000);
+        return $this->testCase;
     }
     /** 
-     * just make a pause to let user see what's on the screen
-     * @param $millis integer time to sleep in milliseconds, default = 2000 (2 seconds)
+     * Just pause to let user see what's on the screen. 
+     *
+     * Pause is skipped in any of fast modes.
+     * @param integer $millis time to sleep in milliseconds, default = 2000 (2 seconds)
+     * @return CWebTestCase $this for chaining
      */
     public function videoSleep($millis = 2000){
         if (!$this->isFastModeOn()){
             usleep($millis * 1000);
         }
+        return $this->testCase;
     }
 
     /**
-     * @param id string id of select element
-     * @param value string value to be selected. IMPORTANT: value should be visible initially, scrolling is not implemented yet
+     * Selects an item from drop-down select box, when custom selectbox is used
+     *
+     * @param string id id of select element
+     * @param string value value to be selected. IMPORTANT: value should be visible initially, scrolling is not implemented yet
+     * @return CWebTestCase $this for chaining
      */
     public function videoCustomSelectBoxSelect($id, $value){
         $this->videoMouseClick('xpath=//select[@id="'.$id.'"]/following-sibling::a[1]');
@@ -186,19 +366,38 @@ class VideoTestWebTestCaseDriverFunctions {
                 sleep(1);
             }
         }
+        return $this->testCase;
     }
 
+    /**
+     * Removes DatePicker window, that will eventually appear after you focus on date text input
+     * @return CWebTestCase $this for chaining
+     */
     public function videoHideDatePicker(){
-        $this->testCase->runScript('var a = window.document.getElementsByClassName("ui-datepicker"); var i; for (i = 0; i < a.length; i++){a[i].style.display="none";}');
+        $this->testCase->runScript('(function(){var a = window.document.getElementsByClassName("ui-datepicker"); var i; for (i = 0; i < a.length; i++){a[i].style.display="none";}})();');
+        return $this->testCase;
     }
 
     /** 
+     * Sets default position for message window.
+     *
      * @param $position string a CSS style definition, e.g.: 'top: 100px; left: 100px; right: 100px; height: 200px;'. 
      * IMPORTANT: the ; at the end is mandatory
+     * @return CWebTestCase $this for chaining
      */
     public function videoSetDefaultMessagePosition($position = self::VIDEO_DEFAULT_MESSAGE_POSITION){
         $this->videoDefaultMessagePosition = $position;
+        return $this->testCase;
     }
+    
+    /**
+     * Shows slideshow of images. Use it when animation is not possible. 
+     * 
+     * @param array $files array of filenames of images to be shown
+     * @param integer|array $durations pause between sequental images, measured in seconds. If array
+     * is specified, then it should have same keys and same number of items as $files
+     * @return CWebTestCase $this for chaining
+     */
     public function videoShowImage($files, $durations=5){
         if ($this->isSkipModeOn()) return;
         static $fnNameCounter = 1; 
@@ -230,11 +429,13 @@ class VideoTestWebTestCaseDriverFunctions {
         if (!$this->isFastModeOn()) sleep($delay);
 
         $this->testCase->runScript('var a = window.document.getElementById("video-image"); a.parentNode.removeChild(a);');
+        return $this->testCase;
     }
     /** 
      * Shows message 
      * @param $text string - the text. Use "\n" to separate lines.
      * @param $position string see videoSetDefaultMessagePosition
+     * @return CWebTestCase $this for chaining
      */
     public function videoShowMessage($text, $position=null, $moreMsToWait = 0){
         if ($this->isSkipModeOn()) return;
@@ -292,14 +493,15 @@ class VideoTestWebTestCaseDriverFunctions {
             $lastItem[1] += 2000+$moreMsToWait;
             array_push($codeSequence, $lastItem);
         }
-        $this->testCase->runScript('var bftvvideomessage='.CJSON::encode($codeSequence).';');
-        $this->testCase->runScript('var bftvvideomessagefunction=function(){ if (0 == bftvvideomessage.length) { var a = window.document.getElementById("video-message"); a.parentNode.removeChild(a); } else { var nextItem = bftvvideomessage.shift(); window.document.getElementById("video-message-text").innerHTML = nextItem[0]; setTimeout(bftvvideomessagefunction, nextItem[1]); }}; bftvvideomessagefunction(); ');
+        $this->testCase->runScript('(function(){var bftvvideomessage='.CJSON::encode($codeSequence).'; var bftvvideomessagefunction=function(){ if (0 == bftvvideomessage.length) { var a = window.document.getElementById("video-message"); a.parentNode.removeChild(a); } else { var nextItem = bftvvideomessage.shift(); window.document.getElementById("video-message-text").innerHTML = nextItem[0]; setTimeout(bftvvideomessagefunction, nextItem[1]); }}; bftvvideomessagefunction();})();');
         while ($this->testCase->isElementPresent('id=video-message')) usleep(100000);
+        return $this->testCase;
     }
     /** 
      * Types text inside specified element 
-     * @param $element string - same as element in Selenium methods
-     * @param $text string - text to type
+     * @param string $element - same as element in Selenium methods
+     * @param string $text - text to type
+     * @return CWebTestCase $this for chaining
      */
     public function videoType($element, $text){
         if ($this->isFastModeOn()){
@@ -327,30 +529,36 @@ class VideoTestWebTestCaseDriverFunctions {
         if ($idToUse !== $existingId){
             $this->testCase->assignId('id='.$idToUse, $existingId);
         }
+        return $this->testCase;
     }
     /** 
      * Starts video recording 
-     * @param $name string - name of video file
+     * @param string $name - name of video file
+     * @return CWebTestCase $this for chaining
      */
     public function videoStart($name){
         if (!$this->isFastModeOn()){
             exec('selenium-video '.$name.' 2>&1');
         }
+        return $this->testCase;
     }
     /** 
      * Finishes video
+     * @return CWebTestCase $this for chaining
      */
     public function videoStop(){
         if (!$this->isFastModeOn()){
             sleep(5);
             exec('selenium-video stop 2>&1');
         }
+        return $this->testCase;
     }
 
     /** 
      * Prepares for video recording -  
-     *   1. opens homepage, clears cookies,  maximizes window
-     *   2. set ENVIRONMENT=SELENIUM_TEST cookie to let backend know that test configuration should be used
+     * opens homepage, clears cookies,  maximizes window,
+     * sets ENVIRONMENT=SELENIUM_TEST cookie to let backend know that test configuration should be used
+     * @return CWebTestCase $this for chaining
      */
     public function videoInit(){
         $this->testCase->open('');
@@ -358,37 +566,49 @@ class VideoTestWebTestCaseDriverFunctions {
         $this->testCase->createCookie('ENVIRONMENT=SELENIUM_TEST', 'path=/');
         $this->testCase->open('');
         $this->testCase->windowMaximize();
+        return $this->testCase;
     }
 
     /** 
-     * force fast mode -- used when debugging tests to save time
+     * Force fast mode -- used when debugging tests to save time
+     * @return CWebTestCase $this for chaining
      */
     public function videoFast() {
         $this->overrideFastMode = 1;
+        return $this->testCase;
     }
 
     /** 
-     * force slow mode -- used when debugging tests to save time
+     * Force slow mode -- used when debugging tests to save time
+     * @return CWebTestCase $this for chaining
      */
     public function videoSlow() { 
         $this->overrideFastMode = 0;
-    }
-    
-    /** 
-     * force skip mode -- used when debugging tests to save even more 
-     * time - all visual effects will be turned off
-     */
-    public function videoSkip(){
-        $this->overrideFastMode = 2;
+        return $this->testCase;
     }
 
     /** 
-     * reset mode to default (defined by config) -- used when debugging tests to save time
+     * Force skip mode -- used when debugging tests to save even more 
+     * time - all visual effects will be turned off
+     * @return CWebTestCase $this for chaining
+     */
+    public function videoSkip(){
+        $this->overrideFastMode = 2;
+        return $this->testCase;
+    }
+
+    /** 
+     * Reset mode to default (defined by config) -- used when debugging tests to save time
+     * @return CWebTestCase $this for chaining
      */
     public function videoDefault() {
         $this->overrideFastMode = false;
+        return $this->testCase;
     }
     
+    /**
+     * @return boolean|integer 0 or false for slow mode, 1 for fast mode, 2 for skip mode
+     */
     public function isFastModeOn(){
         if (!isset(Yii::app()->params['selenium-video']['ignore-fast-override']) || !Yii::app()->params['selenium-video']['ignore-fast-override']){
             if ($this->overrideFastMode !== false) {
@@ -397,123 +617,11 @@ class VideoTestWebTestCaseDriverFunctions {
         }
         return (isset(Yii::app()->params['selenium-video']['fast']) && Yii::app()->params['selenium-video']['fast'])?Yii::app()->params['selenium-video']['fast']:false;
     }
-    
+    /**
+     * @return boolean true if skip mode is on
+     */
     public function isSkipModeOn(){
         return ($this->isFastModeOn() === 2);
     }
 }
 
-/** 
- * usage - see above
- */
-class VideoTestWebTestCaseDriver {
-    protected $driver;
-    protected $testCase; 
-    protected $functions;
-
-    static public function attach($driver, $testCase){
-        if (is_a($driver, __CLASS__)) return $driver;
-        $class = __CLASS__;
-        $copy = new $class;
-        $copy->driver = $driver;
-        $copy->testCase = $testCase;
-        $copy->functions = new VideoTestWebTestCaseDriverFunctions();
-        $copy->functions->testCase = $testCase;
-        return $copy;
-    }
-
-    private $lastCallWasVideoCall;
-
-    public function __get($name){
-        return $this->driver->$name;
-    }
-    public function __set($name, $value){
-        $this->driver->$name = $value;
-    }
-    public function __call($fn, $args){
-        if (preg_match('/^video/', $fn)){
-            // this is our call
-            $result = call_user_func_array(array($this->functions, $fn), $args);
-            $this->lastCallWasVideoCall = true;
-        } elseif (in_array($fn, array('getVerificationErrors', 'clearVerificationErrors'))){
-            if (!$this->lastCallWasVideoCall){
-                return $this->driver->$fn();
-            } else {
-                return array();
-            }
-        } else {
-            $this->lastCallWasVideoCall = false;
-            return call_user_func_array(array($this->driver, $fn), $args);
-        }
-    }
-
-    /** 
-     * magic method to save some time when making video tests - it allows you change the code during 
-     * test execution (thus keeping browser open) and retry until code works.
-     * @param $params array array of parameters to be passed to the test function 
-     * usual usage  simply put following line at the appropriate place of your code: 
-     *        $this->doTry(get_defined_vars()); } function t(){
-     * this line will split your test case into two functions - one will end with ->doTry call, and another 
-     * one will be put into the t() test function
-     * This doTry() function will call test function t in an indefinite loop asking you to press Enter 
-     * in the test console after each turn. All exceptions will be caught and displayed instead of making test fail.
-     * After code works - you can move code from test function t to the main testcase function.
-     */
-    public function doTry($params = array()){
-        static $iteration = 0;
-        static $preventDistructors = array();
-        while (1){
-            $d = debug_backtrace();
-            $testFile = file_get_contents($d[4]['file']);
-            preg_match_all($pattern = '/class\s+([^ ]+)\s+extends\s+/ui', $testFile, $m);
-            if (!count($m[0])) throw new Exception($pattern.' not found');
-            $testClassName = array();
-            foreach ($m[0] as $k=>$v){
-                $className = $m[1][$k];
-                $newClassName = $className.$iteration;
-                $testFile = str_replace($v, 'class '.$newClassName.' extends ', $testFile);
-                $classNames[$className] = $newClassName;
-                if (is_a($className, 'CWebTestCase')) $testClassName = $newClassName;
-            }
-            $iteration ++;
-            $testFile = preg_replace('/^\<\?(php)?/ui', '', $testFile);
-            $paramNames = array();
-            foreach ($params as $k=>$v){
-                $paramNames[]='$'.$k;
-            }
-            $testFile = preg_replace('/(public\s+)?function\s+t\s*\(\)[ \t\r\n]*\{/', 'public function t('.implode(', ', $paramNames).'){', $testFile);
-            eval($testFile);
-            $test = new $newClassName;
-            $preventDistructors[] = $test;
-            $reflection = new ReflectionClass($test);
-            $property = $reflection->getProperty('drivers');
-            $property->setAccessible(true);
-            
-            $oldReflection = new ReflectionClass($this->testCase);
-            $oldProperty = $oldReflection->getProperty('drivers');
-            $oldProperty->setAccessible(true);
-            $property->setValue($test, $oldProperty->getValue($this->testCase));
-
-
-            try {
-                call_user_func_array(array($test, 't'), $params);
-            } catch (Exception $e){
-                print_r($e);
-            }
-            echo PHP_EOL.'press enter...'.PHP_EOL;
-            @flush(); @ob_flush();
-            fgets(STDIN);
-
-        }        
-
-    }
-    /** 
-     * just dumps values during test execution. To be used for debugging tests
-     */
-    public function say($msg){
-        print_r($msg);
-        echo PHP_EOL;
-        if (strlen(print_r($msg, true)) < 100) var_dump($msg);
-        flush(); @ob_flush();
-    }
-}

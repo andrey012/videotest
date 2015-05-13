@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>Class VideoTestWebTestCaseDriver</title>
+
+	<link rel="stylesheet" href="resources/style.css?e99947befd7bf673c6b43ff75e9e0f170c88a60e">
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+		</div>
+
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li class="active"><a href="class-VideoTestWebTestCaseDriver.html">VideoTestWebTestCaseDriver</a></li>
+				<li><a href="class-VideoTestWebTestCaseDriverFunctions.html">VideoTestWebTestCaseDriverFunctions</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="text" name="q" class="text" placeholder="Search">
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class VideoTestWebTestCaseDriver</h1>
+
+
+	<div class="description">
+	<p>Custom Selenium Driver, which adds some animation functions.</p>
+
+<pre>usage:
+  <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> setUp(){
+    Yii::import(<span class="php-quote">'application.vendor.videotest.VideoTestWebTestCaseDriver'</span>);
+    <span class="php-var">$this</span>-&gt;drivers[<span class="php-num">0</span>]=VideoTestWebTestCaseDriver::attach(<span class="php-var">$this</span>-&gt;drivers[<span class="php-num">0</span>], <span class="php-var">$this</span>);
+    parent::setUp();
+  }
+
+  <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> testABC(){
+    <span class="php-var">$this</span>-&gt;videoInit();
+    <span class="php-var">$this</span>-&gt;open(<span class="php-quote">''</span>);
+    <span class="php-var">$this</span>-&gt;videoStart(<span class="php-quote">'ABC'</span>);
+    <span class="php-var">$this</span>-&gt;videoShowMessage(<span class="php-quote">'Test ABC'</span>);
+    ...
+  }</pre>
+
+<p>Configuration: <br/></p>
+
+<pre>Yii::app()-&gt;params[<span class="php-quote">'selenium-video'</span>][<span class="php-quote">'fast'</span>]
+  *  set to <span class="php-num">1</span> to skip animation <span class="php-keyword1">and</span> make test run faster during development
+  *  set to <span class="php-num">2</span> to skip all visual effects completely
+  *  set to <span class="php-num">0</span> <span class="php-keyword1">or</span> <span class="php-keyword1">false</span> <span class="php-keyword1">for</span> <span class="php-keyword1">default</span> (slow, animated) behavior</pre>
+
+<p>Inside the test you can override this value by using following functions:</p>
+
+<pre>*   <span class="php-var">$this</span>-&gt;videoSlow() -- equal to setting configuration value to <span class="php-num">0</span>
+  *   <span class="php-var">$this</span>-&gt;videoFast() -- equal to setting configuration value to <span class="php-num">1</span>
+  *   <span class="php-var">$this</span>-&gt;videoSkip() -- equal to setting configuration value to <span class="php-num">2</span>
+  *   <span class="php-var">$this</span>-&gt;videoDefault() -- returns to <span class="php-keyword1">default</span> setting from configuration</pre>
+
+<p>These functions can be configured to be ignored on CI server -- set
+Yii::app()->params['selenium-video']['ignore-fast-override'] to true in your local CI config</p>
+	</div>
+
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		
+		
+
+			<b>Located at</b> <a href="source-class-VideoTestWebTestCaseDriver.html#3-191" title="Go to source code">VideoTestWebTestCaseDriver.php</a>
+		<br>
+	</div>
+
+
+
+	<table class="summary methods" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="attach" id="_attach">
+
+		<td class="attributes"><code>
+			 public static
+
+			PHPUnit_Extensions_SeleniumTestCase_Driver
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_attach">#</a>
+		<code><a href="source-class-VideoTestWebTestCaseDriver.html#44-59" title="Go to source code">attach</a>( <span>PHPUnit_Extensions_SeleniumTestCase_Driver <var>$driver</var></span>, <span>CWebTestCase <var>$testCase</var></span> )</code>
+
+		<div class="description short">
+			<p>Creates driver object which wraps original one adding our functions</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Creates driver object which wraps original one adding our functions</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$driver</var></dt>
+					<dd>current driver. See Usage above</dd>
+					<dt><var>$testCase</var></dt>
+					<dd>current test case. See Usage above</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					PHPUnit_Extensions_SeleniumTestCase_Driver<br>driver to be placed to $this->drivers[0]
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="__get" id="___get">
+
+		<td class="attributes"><code>
+			 public 
+
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___get">#</a>
+		<code><a href="source-class-VideoTestWebTestCaseDriver.html#66-73" title="Go to source code">__get</a>( <span>string <var>$name</var></span> )</code>
+
+		<div class="description short">
+			<p>Wrapper magic getter</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Wrapper magic getter</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					mixed
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="__set" id="___set">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___set">#</a>
+		<code><a href="source-class-VideoTestWebTestCaseDriver.html#74-82" title="Go to source code">__set</a>( <span>string <var>$name</var></span>, <span>mixed <var>$value</var></span> )</code>
+
+		<div class="description short">
+			<p>Wrapper magic setter</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Wrapper magic setter</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd></dd>
+					<dt><var>$value</var></dt>
+					<dd></dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="__call" id="___call">
+
+		<td class="attributes"><code>
+			 public 
+
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___call">#</a>
+		<code><a href="source-class-VideoTestWebTestCaseDriver.html#83-106" title="Go to source code">__call</a>( <span>string <var>$fn</var></span>, <span>array <var>$args</var></span> )</code>
+
+		<div class="description short">
+			<p>Wrapper magic method
+Routes calls started with "video" to our driver, and hides errors, that can be
+introduced by our driver</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Wrapper magic method
+Routes calls started with "video" to our driver, and hides errors, that can be
+introduced by our driver</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$fn</var></dt>
+					<dd></dd>
+					<dt><var>$args</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					mixed
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="doTry" id="_doTry">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_doTry">#</a>
+		<code><a href="source-class-VideoTestWebTestCaseDriver.html#108-179" title="Go to source code">doTry</a>( <span> <var>$params</var> = <span class="php-keyword1">array</span>()</span> )</code>
+
+		<div class="description short">
+			<p>Trial-and-error method for writing video tests</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Trial-and-error method for writing video tests</p>
+
+<p>Magic method to save some time when making video tests - it allows you change the code during
+test execution (thus keeping browser open) and retry until code works.</p>
+
+<p>Usual usage  simply put following line at the appropriate place of your code:</p>
+
+<pre><span class="php-var">$this</span>-&gt;doTry(<span class="php-keyword2">get_defined_vars</span>()); } <span class="php-keyword1">function</span> t(){</pre>
+
+<p>This line will split your test function into two functions - one will end with ->doTry() call,
+and another one will go into the t() test function</p>
+
+<p>This doTry() function will call test function t in an indefinite loop asking you to press Enter
+in the test console after each turn. All exceptions will be caught and displayed instead
+of making test fail.</p>
+
+<p>As soon as a piece of code works (i.e. it clicks appropriate button or link) - you move working
+code from t() function up to your test function.</p>
+
+<p>After code works - you should have your t() function empty and simply remove the ->doTry() line.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$params</var></dt>
+					<dd>array of parameters to be passed to the test function</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="say" id="_say">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_say">#</a>
+		<code><a href="source-class-VideoTestWebTestCaseDriver.html#180-190" title="Go to source code">say</a>( <span>mixed <var>$msg</var></span> )</code>
+
+		<div class="description short">
+			<p>just dumps values during test execution. To be used for debugging tests</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>just dumps values during test execution. To be used for debugging tests</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$msg</var></dt>
+					<dd>can be of any type, since print_r will be used</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+
+	<table class="summary properties" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="driver" id="$driver">
+		<td class="attributes"><code>
+			protected  
+			
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-VideoTestWebTestCaseDriver.html#40" title="Go to source code"><var>$driver</var></a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$driver" class="anchor">#</a>
+				<code></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="testCase" id="$testCase">
+		<td class="attributes"><code>
+			protected  
+			
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-VideoTestWebTestCaseDriver.html#41" title="Go to source code"><var>$testCase</var></a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$testCase" class="anchor">#</a>
+				<code></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="functions" id="$functions">
+		<td class="attributes"><code>
+			protected  
+			
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-VideoTestWebTestCaseDriver.html#42" title="Go to source code"><var>$functions</var></a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$functions" class="anchor">#</a>
+				<code></code>
+			</div>
+		</td>
+	</tr>
+	</table>
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		 API documentation generated by <a href="http://apigen.org">ApiGen</a>
+	</div>
+</div>
+</div>
+<script src="resources/combined.js"></script>
+<script src="elementlist.js"></script>
+</body>
+</html>
