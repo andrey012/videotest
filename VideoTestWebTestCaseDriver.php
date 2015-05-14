@@ -93,6 +93,7 @@ class VideoTestWebTestCaseDriver {
             // this is our call
             $result = call_user_func_array(array($this->functions, $fn), $args);
             $this->_lastCallWasVideoCall = true;
+            return $result;
         } elseif (in_array($fn, array('getVerificationErrors', 'clearVerificationErrors'))){
             if (!$this->_lastCallWasVideoCall){
                 return $this->driver->$fn();
