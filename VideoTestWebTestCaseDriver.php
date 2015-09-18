@@ -480,7 +480,8 @@ class VideoTestWebTestCaseDriverFunctions {
                 
                     if ($this->isFastModeOn()) {
                     } else {
-                        $codeSequence[] = array($contents.$lastWord, 50);
+                        $codeSequence[] = array($contents, $lastWord, 50);
+                        $contents = '';
                     }
                 }
                 $contents .= $lastWordNoBlink;
@@ -488,13 +489,13 @@ class VideoTestWebTestCaseDriverFunctions {
         }
         // TBD: this works slowly for large amounts of texts, we'd better optimize repeating $contents numerous times. 
         if ($this->isFastModeOn()) {
-            $codeSequence[] = array($contents, 500+$moreMsToWait);
+            $codeSequence[] = array($contents, '', 500+$moreMsToWait);
         } else {
             $lastItem = array_pop($codeSequence);
-            $lastItem[1] += 2000+$moreMsToWait;
+            $lastItem[2] += 2000+$moreMsToWait;
             array_push($codeSequence, $lastItem);
         }
-        $this->testCase->runScript('(function(){var bftvvideomessage='.CJSON::encode($codeSequence).'; var bftvvideomessagefunction=function(){ if (0 == bftvvideomessage.length) { var a = window.document.getElementById("video-message"); a.parentNode.removeChild(a); } else { var nextItem = bftvvideomessage.shift(); window.document.getElementById("video-message-text").innerHTML = nextItem[0]; setTimeout(bftvvideomessagefunction, nextItem[1]); }}; bftvvideomessagefunction();})();');
+        $this->testCase->runScript('(function(){var s = ""; bftvvideomessage = ' . CJSON::encode($codeSequence) . '; var bftvvideomessagefunction = function(){ if (0 == bftvvideomessage.length) { a = window.document.getElementById("video-message"); a.parentNode.removeChild(a); } else { var nextItem = bftvvideomessage.shift(); s += nextItem[0]; window.document.getElementById("video-message-text").innerHTML = s + nextItem[1]; setTimeout(bftvvideomessagefunction, nextItem[2]); }}; bftvvideomessagefunction();})();');
         while ($this->testCase->isElementPresent('id=video-message')) usleep(100000);
         return $this->testCase;
     }
